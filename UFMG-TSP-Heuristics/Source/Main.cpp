@@ -8,37 +8,36 @@
 
 namespace fs = std::experimental::filesystem;
 
+#define TEST_COUNT 1000
 
-int main(int argc, char** argv) {
+void Run(const std::string& path, Graph::DistanceType dType) {
+	Graph att(path, dType);
 	Timer timer;
-	{
-		Graph att("./Data/att48.tsp", Graph::ATT);
 
-		int distance;
-		
+	std::string fName = fs::path(path).stem().string();
+
+	double avgDuration = 0.0;
+	int distance;
+
+	for (int i = 0; i < TEST_COUNT; i++) {
 		timer.Reset();
 		auto res = att.GetTSPCities(&distance);
-		double duration = timer.Get();
-
-		std::string fName = "att48.tsp";
-		std::cout << fName << ", " << distance;
-		std::cout << ", " << duration << "\n";
+		avgDuration += timer.Get();
 	}
 
+	avgDuration /= TEST_COUNT;
+
+	std::cout << fName << ", " << distance << ", ";
+	std::cout << std::fixed << avgDuration << "\n";
+}
+
+int main(int argc, char** argv) {
+	Run("./Data/att48.tsp", Graph::ATT);
+	
 	for (auto& entry : fs::directory_iterator("./Data/EUC_2D/")) {
 		std::string fName = entry.path().string();
 
-		Graph euc(fName, Graph::EUC_2D);
-
-		int distance;
-
-		timer.Reset();
-		auto res = euc.GetTSPCities(&distance);
-		double duration = timer.Get();
-
-		fName = fs::path(fName).filename().string();
-		std::cout << fName << ", " << distance;
-		std::cout << ", " << duration << "\n";
+		Run(fName, Graph::EUC_2D);
 	}
 
 	system("pause");

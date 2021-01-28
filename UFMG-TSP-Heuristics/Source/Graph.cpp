@@ -78,12 +78,17 @@ std::vector<size_t> Graph::GetTSPCities(int* walkDistance){
 	std::vector<size_t> out;
 	int distance = 0;
 
-	size_t remaining = m_cities.size() - 1;
+	// Reset all cities first
+	for (auto& city : m_cities) {
+		city.visited = false;
+	}
 
 	// To make sure that we get deterministic results, we'll
 	// always start with the first city in the list.
 	size_t current = 0;
-
+	size_t firstCity = current;
+	size_t remaining = m_cities.size() - 1;
+	
 	while (remaining > 0 && m_cities.size() > 0) {
 		m_cities[current].visited = true;
 
@@ -112,6 +117,10 @@ std::vector<size_t> Graph::GetTSPCities(int* walkDistance){
 		
 		remaining--;
 	}
+	// Now the Salesman needs to go back to the first
+	// city he visited.
+	out.push_back(firstCity);
+	distance += GetDistance(current, firstCity);
 
 	if (walkDistance) { *walkDistance = distance; }
 	return out;
