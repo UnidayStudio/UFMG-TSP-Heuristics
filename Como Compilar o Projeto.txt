@@ -1,18 +1,21 @@
-========================
-// VISUAL STUDIO 2017 //
-========================
-Esse projeto foi feito no Visual Studio 2017.
-
-A forma mais fácil e executá-lo é clonando o repositório inteiro do projeto do Github:
+Esse projeto também está disponível no Github:
 https://github.com/UnidayStudio/UFMG-TSP-Heuristics
 
-Abrindo a solução no VS 2017 ou superior, compilando e executando por lá (atalho F5).
+==============================
+// Através do Visual Studio //
+==============================
+Esse projeto foi feito no Visual Studio 2017.
+
+A forma mais fácil e executá-lo é abrindo a solução (.sln) no VS 2017 ou superior, 
+compilando e executando o programa por lá (atalho F5).
 
 ============================
 // Através do g++ (Linux) //
 ============================
 O projeto possui as macros adequadas para ser compilado fora do MSVC, 
-então é possível compilar o código utilizando o g++ NO LINUX:
+então é possível compilar o código utilizando o g++ NO LINUX.
+
+Entre na pasta do projeto (UFMG-TSP-Heuristics) e execute:
 
 g++ --std=c++17 -lstdc++fs Source/*.cpp -o app
 
