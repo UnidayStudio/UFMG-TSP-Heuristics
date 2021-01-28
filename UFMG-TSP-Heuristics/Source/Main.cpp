@@ -1,12 +1,18 @@
 #include <iostream>
 #include <string>
 
-#include <experimental/filesystem>
-
 #include "Graph.h"
 #include "Timer.h"
 
+#ifdef _MSC_VER
+#include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
+#else
+// If you're not using Visual Studio (MSVC), please use
+// C++17 and check if your compiler have the filesystem lib!
+#include <filesystem>
+namespace fs = std::filesystem;
+#endif
 
 #define TEST_COUNT 1000
 

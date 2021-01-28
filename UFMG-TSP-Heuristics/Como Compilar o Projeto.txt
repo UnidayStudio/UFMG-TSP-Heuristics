@@ -1,0 +1,26 @@
+========================
+// VISUAL STUDIO 2017 //
+========================
+Esse projeto foi feito no Visual Studio 2017.
+
+A forma mais fácil e executá-lo é clonando o repositório inteiro do projeto do Github:
+https://github.com/UnidayStudio/UFMG-TSP-Heuristics
+
+Abrindo a solução no VS 2017 ou superior, compilando e executando por lá (atalho F5).
+
+============================
+// Através do g++ (Linux) //
+============================
+O projeto possui as macros adequadas para ser compilado fora do MSVC, 
+então é possível compilar o código utilizando o g++ NO LINUX:
+
+g++ --std=c++17 -lstdc++fs Source/*.cpp -o app
+
+Note que o trabalho utiliza a biblioteca std::filesystem, então é necessário rodar com o gcc 8,
+C++17 e linkando essa lib na hora de compilar (-lstdc++fs).
+
+Por esse motivo, o código não compila no MingW (gcc para Windows), já que este não possui a
+biblioteca filesystem.
+
+
+

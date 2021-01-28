@@ -6,6 +6,11 @@
 #include <string>
 #include <cmath>
 
+// For the code to compile using MingW...
+#ifndef INT_MAX
+#define INT_MAX 2147483647
+#endif 
+
 
 Graph::Graph() {
 
@@ -32,7 +37,9 @@ Graph::Graph(const std::string & path, DistanceType dType){
 				m_cities.push_back({ false, int(x), int(y) });
 			}
 			else {
+#ifdef _MSC_VER
 				throw std::exception("Invalid format!");
+#endif
 				break;
 			}
 		}
@@ -66,7 +73,9 @@ int Graph::GetDistance(size_t cityA, size_t cityB){
 		int rij = sqrt((xd * xd + yd * yd) / 10.0);
 		return round(rij);
 	}
+#ifdef _MSC_VER
 	throw std::exception("Invalid Distance Type!");
+#endif
 	return 0;
 }
 
@@ -106,7 +115,9 @@ std::vector<size_t> Graph::GetTSPCities(int* walkDistance){
 			}
 		}
 		if (nearest == -1) {
+#ifdef _MSC_VER
 			throw std::exception("No city left!");
+#endif
 			break;
 		}
 
