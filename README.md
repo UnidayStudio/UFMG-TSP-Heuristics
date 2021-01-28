@@ -65,9 +65,7 @@ cidade inicial fixa (sempre a primeira), não houve diferenças no resultados da d
 percorrida.
 Abaixo a tabela com os resultados obtidos:
 
-![Table1](https://media.discordapp.net/attachments/760282757334695936/804359408704159804/unknown.png)
-![Table2](https://media.discordapp.net/attachments/760282757334695936/804359535187722240/unknown.png?width=619&height=427)
-![Table3](https://media.discordapp.net/attachments/760282757334695936/804359613096787978/unknown.png)
+![Table1](https://media.discordapp.net/attachments/760282757334695936/804360609058914345/unknown.png)
 
 
 ## Conclusão
