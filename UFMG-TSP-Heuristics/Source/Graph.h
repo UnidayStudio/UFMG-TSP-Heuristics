@@ -5,9 +5,7 @@
 #include <vector>
 
 struct City {
-	// Stores how many times the Salesman visited the city.
-	// For the TSP, it will never be more than 1.
-	int visits;
+	bool visited;
 
 	// Coordinates
 	int x, y;

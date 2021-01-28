@@ -25,12 +25,14 @@ Graph::Graph(const std::string & path, DistanceType dType){
 		if (readingCoords) {
 			std::istringstream iss(line);
 
-			int id, x, y;
+			int id;
+			double x, y;
 
 			if (iss >> id >> x >> y) {
-				m_cities.push_back({ 0, x, y });
+				m_cities.push_back({ false, int(x), int(y) });
 			}
 			else {
+				throw std::exception("Invalid format!");
 				break;
 			}
 		}
@@ -42,6 +44,7 @@ Graph::Graph(const std::string & path, DistanceType dType){
 
 	}
 
+	file.close();
 }
 
 Graph::~Graph() {
@@ -75,10 +78,39 @@ std::vector<size_t> Graph::GetTSPCities(int* walkDistance){
 	std::vector<size_t> out;
 	int distance = 0;
 
-	if (m_cities.size() > 0) {
-		for (auto& city : m_cities) {
-			std::cout << city.x << ", " << city.y << "\n";
+	size_t remaining = m_cities.size() - 1;
+
+	// To make sure that we get deterministic results, we'll
+	// always start with the first city in the list.
+	size_t current = 0;
+
+	while (remaining > 0 && m_cities.size() > 0) {
+		m_cities[current].visited = true;
+
+		// First step: Find the nearest unvisited city.
+		int nearest = -1;
+		int nDistance = INT_MAX;
+		for (size_t i = 0; i < m_cities.size(); i++) {
+			if (m_cities[i].visited) {				
+				continue;
+			}
+			int d = GetDistance(current, i);
+			if (d < nDistance) {
+				nearest = i;
+				nDistance = d;
+			}
 		}
+		if (nearest == -1) {
+			throw std::exception("No city left!");
+			break;
+		}
+
+		// Saving the results:
+		out.push_back(current);
+		current = nearest;
+		distance += nDistance;
+		
+		remaining--;
 	}
 
 	if (walkDistance) { *walkDistance = distance; }

@@ -8,6 +8,7 @@
 
 namespace fs = std::experimental::filesystem;
 
+
 int main(int argc, char** argv) {
 	Timer timer;
 	{
