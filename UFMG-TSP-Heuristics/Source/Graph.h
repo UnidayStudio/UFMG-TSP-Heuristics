@@ -33,7 +33,21 @@ public:
 	// Travelling Salesman Problem Related
 	====================================*/
 
-	std::vector<size_t> GetTSPCities(int* walkDistance=nullptr);
+	// Nearest Neighbor Algorithm
+	std::vector<size_t> GetTSPCitiesNN(int* walkDistance=nullptr);
+
+	// NN + 2-Opt
+	std::vector<size_t> GetTSPCities2Opt(int* walkDistance = nullptr, int iterations = 5);
+
+	/*==========
+	// TSP Utils
+	==========*/
+
+	// 2-OPT Swap
+	static std::vector<size_t> Swap2Opt(const std::vector<size_t>& route, size_t i, size_t k);
+
+	// To recalculate the distance:
+	int GetWalkDistance(const std::vector<size_t>& route);
 
 	DistanceType distanceType;
 protected:

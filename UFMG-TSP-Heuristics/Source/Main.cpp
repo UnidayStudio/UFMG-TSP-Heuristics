@@ -27,7 +27,8 @@ void Run(const std::string& path, Graph::DistanceType dType) {
 
 	for (int i = 0; i < TEST_COUNT; i++) {
 		timer.Reset();
-		auto res = att.GetTSPCities(&distance);
+		//auto res = att.GetTSPCitiesNN(&distance);
+		auto res = att.GetTSPCities2Opt(&distance, 10);
 		avgDuration += timer.Get();
 	}
 

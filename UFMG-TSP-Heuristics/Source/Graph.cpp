@@ -83,7 +83,7 @@ size_t Graph::GetCityCount(){
 	return m_cities.size();
 }
 
-std::vector<size_t> Graph::GetTSPCities(int* walkDistance){
+std::vector<size_t> Graph::GetTSPCitiesNN(int* walkDistance){
 	std::vector<size_t> out;
 	int distance = 0;
 
@@ -134,6 +134,93 @@ std::vector<size_t> Graph::GetTSPCities(int* walkDistance){
 	distance += GetDistance(current, firstCity);
 
 	if (walkDistance) { *walkDistance = distance; }
+	return out;
+}
+
+std::vector<size_t> Graph::GetTSPCities2Opt(int * walkDistance, int iterations){
+	// Start with the NN solution:
+	int currentDistance;
+	auto current = GetTSPCitiesNN(&currentDistance);
+	currentDistance = GetWalkDistance(current);
+	
+	// Needs at least 5 cities for this to make sense. If it's less than 3,
+	// then there is no circle and the path doesn't make sense (invalid).
+	// If it's 4, the circle is a triangle (first and last cities are the same)
+	// and a triangle already have the best path.
+	if (current.size() < 5) {
+		*walkDistance = currentDistance;
+		return current;
+	}
+
+	// Just to compare it in the end
+	int startDistance = currentDistance;
+	auto startPath = current;
+
+	int routeSize = current.size();
+
+	for (int attempt = 0; attempt < iterations; attempt++) {
+		// Note: The first and the last city can't be included
+		// here since they MUST be the same.
+		for (int i = 1; i < routeSize - 3; i++) {
+			bool breakThis = false;
+
+			for (int k = i + 1; k < routeSize - 2; k++) {
+				auto newRoute = Swap2Opt(current, i, k);				
+				int newDistance = GetWalkDistance(newRoute);
+
+				if (newDistance < currentDistance) {
+					currentDistance = newDistance;
+					current = newRoute;
+
+					breakThis = true;
+					break;
+				}
+			}
+			if (breakThis) {
+				break;
+			}
+		}
+	}
+
+	//std::cout << " - Start: " << startDistance << ", end: " << currentDistance;
+	//std::cout << ". Reduction: " << 1.f - float(currentDistance) / float(startDistance);
+	//std::cout << "\n";
+
+	*walkDistance = currentDistance;
+	return current;
+}
+
+std::vector<size_t> Graph::Swap2Opt(const std::vector<size_t>& route, size_t i, size_t k){
+	std::vector<size_t> out;
+
+	// Step 1: Add route[0] to route[i-1] into the output
+	for (int x = 0; x < i - 1; x++) {
+		out.push_back(route[x]);
+	}
+
+	// Step 2: Add route[i] to route[k] bu reversed into the output
+	for (int x = k; x >= i ; x--) {
+		out.push_back(route[x]);
+	}
+
+	// Step 3: Add route[k+1] to end into the output
+	for (int x = k; x < route.size(); x++) {
+		out.push_back(route[x]);
+	}
+
+	return out;
+}
+
+int Graph::GetWalkDistance(const std::vector<size_t>& route){
+	if (route.size() <= 1) {
+		return 0;
+	}
+	int out = GetDistance(route[route.size() - 1], route[0]);
+
+	for (int i = 0; i < route.size() - 1; i++) {
+		out += GetDistance(route[i], route[i + 1]);
+	}
+
 	return out;
 }
 
