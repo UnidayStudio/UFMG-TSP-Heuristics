@@ -161,6 +161,8 @@ std::vector<size_t> Graph::GetTSPCities2Opt(int * walkDistance, int iterations){
 	for (int attempt = 0; attempt < iterations; attempt++) {
 		// Note: The first and the last city can't be included
 		// here since they MUST be the same.
+		bool noDifferences = true;
+
 		for (int i = 1; i < routeSize - 3; i++) {
 			bool breakThis = false;
 
@@ -173,12 +175,19 @@ std::vector<size_t> Graph::GetTSPCities2Opt(int * walkDistance, int iterations){
 					current = newRoute;
 
 					breakThis = true;
+					noDifferences = false;
 					break;
 				}
 			}
 			if (breakThis) {
 				break;
 			}
+		}
+
+		if (noDifferences) {
+			// This algorithm already found his best solution, 
+			// there is no need to keep running it!
+			break;
 		}
 	}
 

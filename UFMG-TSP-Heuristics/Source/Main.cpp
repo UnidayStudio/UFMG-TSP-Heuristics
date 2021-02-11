@@ -14,7 +14,7 @@ namespace fs = std::experimental::filesystem;
 namespace fs = std::filesystem;
 #endif
 
-#define TEST_COUNT 1000
+#define TEST_COUNT 1
 
 void Run(const std::string& path, Graph::DistanceType dType) {
 	Graph att(path, dType);
@@ -28,7 +28,7 @@ void Run(const std::string& path, Graph::DistanceType dType) {
 	for (int i = 0; i < TEST_COUNT; i++) {
 		timer.Reset();
 		//auto res = att.GetTSPCitiesNN(&distance);
-		auto res = att.GetTSPCities2Opt(&distance, 10);
+		auto res = att.GetTSPCities2Opt(&distance, 100);
 		avgDuration += timer.Get();
 	}
 
