@@ -39,6 +39,9 @@ public:
 	// NN + 2-Opt
 	std::vector<size_t> GetTSPCities2Opt(int* walkDistance = nullptr, int iterations = 5);
 
+	// Simulated Annealing
+	std::vector<size_t> GetTSPCitiesAnnealing(int* walkDistance = nullptr, int iterations = 1000);
+
 	/*==========
 	// TSP Utils
 	==========*/
@@ -50,6 +53,13 @@ public:
 	int GetWalkDistance(const std::vector<size_t>& route);
 
 	DistanceType distanceType;
+
+	struct {
+		float temperature;
+
+		float stopTemperature;
+		float alpha;
+	} anneal;
 protected:
 	std::vector<City> m_cities;
 };

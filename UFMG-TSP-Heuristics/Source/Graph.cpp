@@ -5,6 +5,8 @@
 #include <sstream>
 #include <string>
 #include <cmath>
+#include <algorithm>
+#include <stdlib.h>
 
 // For the code to compile using MingW...
 #ifndef INT_MAX
@@ -13,7 +15,9 @@
 
 
 Graph::Graph() {
-
+	anneal.stopTemperature = 0.00001f;
+	anneal.temperature = 1.f;
+	anneal.alpha = 0.995f;
 }
 
 Graph::Graph(const std::string & path, DistanceType dType){
@@ -190,10 +194,71 @@ std::vector<size_t> Graph::GetTSPCities2Opt(int * walkDistance, int iterations){
 			break;
 		}
 	}
+	
+	*walkDistance = currentDistance;
+	return current;
+}
 
-	//std::cout << " - Start: " << startDistance << ", end: " << currentDistance;
-	//std::cout << ". Reduction: " << 1.f - float(currentDistance) / float(startDistance);
-	//std::cout << "\n";
+float GetRandom() {
+	return float(rand() % 1000) / 1000.0f;
+}
+
+template <typename T>
+T RandRange(T minV, T maxV) {
+	T trustedMin = std::min(minV, maxV);
+	T trustedMax = std::max(minV, maxV);
+	T range = trustedMax - trustedMin;
+	return trustedMin + (GetRandom() * range);
+}
+
+std::vector<size_t> Graph::GetTSPCitiesAnnealing(int * walkDistance, int iterations){
+	// Start with the NN solution:
+	int currentDistance;
+	auto current = GetTSPCitiesNN(&currentDistance);
+	currentDistance = GetWalkDistance(current);
+
+	// Needs at least 5 cities for this to make sense. If it's less than 3,
+	// then there is no circle and the path doesn't make sense (invalid).
+	// If it's 4, the circle is a triangle (first and last cities are the same)
+	// and a triangle already have the best path.
+	if (current.size() < 5) {
+		*walkDistance = currentDistance;
+		return current;
+	}
+
+	int routeSize = current.size();
+
+	anneal.temperature = sqrt(routeSize);
+
+	for (int iter = 0; iter < iterations; iter++) {
+		if (anneal.temperature < anneal.stopTemperature) {
+			break;
+		}
+
+		int i = RandRange(1, routeSize - 3);
+		int k = RandRange(i + 1, routeSize - 2);
+
+		auto newRoute = Swap2Opt(current, i, k);
+		int newDistance = GetWalkDistance(newRoute);
+
+		if (currentDistance > newDistance) { // Is y better than x?
+			// Yes..
+			current = newRoute;
+			currentDistance = newDistance;
+		}
+		else {
+			// No...
+			float p = exp(-abs(newDistance - currentDistance) / anneal.temperature);
+
+			// We still add a random probability of accepting the worse option.
+			// This is performed to try to escape from local minima. 
+			if (GetRandom() < p) {
+				current = newRoute;
+				currentDistance = newDistance;
+			}
+		}
+		anneal.temperature *= anneal.alpha;
+	}
 
 	*walkDistance = currentDistance;
 	return current;
